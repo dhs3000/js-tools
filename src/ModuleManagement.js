@@ -1,36 +1,29 @@
+/*
+ * Copyright 2012-2013 Dennis Hörsch.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
- * Hilfe um 'Module' in ihrem eigenen Scope auszuführen und ihre Abhängigkeiten zu deklarieren. Ausßerdem lassen sich Module, wenn gewünscht global
- * registrieren. Verwendung bspw.:
- * 
- * mm.define('P', function() { 'use strict';
- * 
- * var attr = "PRIVATE";
- * 
- * return { get: function() { return attr; },
- * 
- * set: function(data) { attr = data; } }; });
- * 
- * mm.define('USER', function(P) { 'use strict';
- * 
- * return { print: function() { console.log("P.get() = " + P.get()); } };
- * 
- * });
- * 
- * var o = mm.define('ONLY', { // keine Abhängigkeiten say: function(text) { console.log("I say '" + text + "'!"); } });
- * 
- * 
+ * Helper to declare modules to be used in a specific 'scope' with their dependencies.
  * 
  * @param window
- * @param _
+ * @param Functions
  */
-(function(window, Functions) {
+(function(window, Functions, Debug) {
 	'use strict';
 
-	function assert(condition, msg) {
-	  if (!condition) {
-		throw 'Assertion error: ' + msg;
-	  }
-	}
+	var assert = Debug.assert;
 	
 	function ModuleManagement(Functions) {
 	  	var isFunction = Functions.isFunction,
@@ -78,7 +71,6 @@
 			return modules[name] = module ? (isFunction(module) ? module() : module) : {};
 		};
 
-
 		/**
 		 * Erstellt eine benannte Klasse (Modul). Wertet im Gegensatz zu module() keine Objekte/Funktionen aus.
 		 */
@@ -115,5 +107,5 @@
 
 	window.ModuleManagement = ModuleManagement;
 	
-}(window, Functions));
+}(window, Functions, Debug));
 
