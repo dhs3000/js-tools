@@ -1,5 +1,5 @@
-/*
- * Copyright 2012-2013 Dennis Hörsch.
+/*!
+ * Copyright 2013-2014 Dennis Hörsch.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@
     	
     	isFunction = function(fn) {
 	  		return (typeof fn == 'function');
-		};
+		},
+		
+		arraySlice = Array.prototype.slice;
 	
 	window.Functions = {
 		/**
@@ -60,7 +62,11 @@
 			return parameterNames;
 		},
 		
-		isFunction: isFunction
+		isFunction: isFunction,
+		
+		args: function(args, startIndex) {
+			return arraySlice.call(args, startIndex);
+		}
 	};
 	
 }(window));

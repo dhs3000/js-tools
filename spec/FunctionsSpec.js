@@ -1,15 +1,10 @@
 
 
-//dann mm machen
-
-//ClassBase noch mal reimplementieren aber ohne mm zu benutzen
-
-
 describe("Functions", function() {
   var f = window.Functions;
 
   describe("isFunction", function() {
-	it("Function to be recognized as function", function() {
+	  it("Function to be recognized as function", function() {
 	    function test() {
 	    }
 
@@ -26,6 +21,24 @@ describe("Functions", function() {
 	    var test = undefined;
 
 	    expect(f.isFunction(test)).toBeFalsy();
+	  });
+  });
+  
+  describe("args", function() {
+	  it("Get all arguments of a function", function() {
+		  function test() {
+			  return f.args(arguments);
+		  }
+
+		  expect(test('EINS', 2)).toEqual(["EINS", 2]);
+	  });
+
+	  it("Get all except first arguments of a function", function() {
+		  function test() {
+			  return f.args(arguments, 1);
+		  }
+
+		  expect(test('EINS', 2)).toEqual([2]);
 	  });
   });
   

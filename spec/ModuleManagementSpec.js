@@ -7,13 +7,6 @@ describe("ModuleManagement", function() {
 		m = new ModuleManagement(f);
 	});
 
-	// fuer @super(): ist callee dann this / init? so dass man @super global registrieren kann? wir
-	// sind it() definiert? global...
-	// this.@super()
-	// und super am prototypen deklarieren
-	// nur wenn init @super enthaelt
-	// wenn kein init, dann eines kreieren, dass super aufruft
-
 	describe("define", function() {
 
 		function defineTestModuleWithPrivateMember(m, name) {

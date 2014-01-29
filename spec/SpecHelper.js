@@ -12,6 +12,19 @@ beforeEach(function() {
 					};
 				}
 			};
+		},
+
+		toBeInstanceOf: function() {
+			return {
+				compare: function(actual, expected) {
+					var object = actual,
+						result = (object instanceof expected);
+					
+					return {
+						pass: result
+					};
+				}
+			};
 		}
 
 	});
