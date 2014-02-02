@@ -112,6 +112,39 @@ describe("ClassBase", function() {
 			expect(function() {s.test(); }).toThrow(new Error("Can't find super method 'not_existing'!"));
 		});
 
+		
+		it("Should be possible to use superConstructor and superMethod in a subclass", function() {
+			var Named = ClassBase.extend({
+			    init : function(name) {
+				    this.name = name;
+			    },
+			    
+			    describe: function() {
+			    	return "I call myself a " + this.name;
+			    }
+			    
+			    
+			});
+			
+			var AgingNamed = Named.extend({
+				init: function(name, age) {
+					this.superConstructor(name);
+					this.age = age;
+				},
+				
+				describe: function() {
+					return this.superMethod('describe') + " and I am already " + this.age + " years old!";
+				}
+			});
+			
+			var someOne = new AgingNamed('Hans-Wurst', 19);
+
+			expect(someOne.name).toEqual('Hans-Wurst');
+			expect(someOne.age).toEqual(19);
+
+			expect(someOne.describe()).toEqual('I call myself a Hans-Wurst and I am already 19 years old!');
+		});
+		
 	});
 
 });
