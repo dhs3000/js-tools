@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Js-tools by dhs3000</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Js-tools</h1>
+        <h2>Some tools, utilities and sandbox for Javascript development</h2>
+        <a href="https://github.com/dhs3000/js-tools" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h3>
+<a name="welcome" class="anchor" href="#welcome"><span class="octicon octicon-link"></span></a>Welcome.</h3>
+
+<h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>Include parts as needed. </p>
+
+<div class="highlight highlight-html"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"src/Debug.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"src/Functions.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"src/ModuleManagement.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"src/ClassBase.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+<h3>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">describe</span><span class="p">(</span><span class="s2">"extend"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">it</span><span class="p">(</span><span class="s2">"Should be possible to use superConstructor and superMethod in a subclass"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">Named</span> <span class="o">=</span> <span class="nx">ClassBase</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="nx">init</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+        <span class="p">},</span>
+
+        <span class="nx">describe</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="s2">"I call myself a "</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+        <span class="p">}</span>
+
+
+    <span class="p">});</span>
+
+    <span class="kd">var</span> <span class="nx">AgingNamed</span> <span class="o">=</span> <span class="nx">Named</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+      <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">superConstructor</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="nx">age</span><span class="p">;</span>
+      <span class="p">},</span>
+
+      <span class="nx">describe</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">superMethod</span><span class="p">(</span><span class="s1">'describe'</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" and I am already "</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">+</span> <span class="s2">" years old!"</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="kd">var</span> <span class="nx">someOne</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AgingNamed</span><span class="p">(</span><span class="s1">'Hans-Wurst'</span><span class="p">,</span> <span class="mi">19</span><span class="p">);</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">someOne</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">'Hans-Wurst'</span><span class="p">);</span>
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">someOne</span><span class="p">.</span><span class="nx">age</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mi">19</span><span class="p">);</span>
+
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">someOne</span><span class="p">.</span><span class="nx">describe</span><span class="p">()).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">'I call myself a Hans-Wurst and I am already 19 years old!'</span><span class="p">);</span>
+  <span class="p">});</span>
+
+<span class="p">});</span>
+</pre></div>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/dhs3000/js-tools/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/dhs3000/js-tools/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/dhs3000/js-tools"></a> is maintained by <a href="https://github.com/dhs3000">dhs3000</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
