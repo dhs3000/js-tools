@@ -40,9 +40,12 @@
 			if (!isFunction(fn)) {
 				throw "Argument must be a function!";
 			}
-
+			return Functions.parameterNamesOfFunctionText(fn.toString());
+		},
+		
+		parameterNamesOfFunctionText: function(fn) {
 			var parameterNames = [],
-				fnText = fn.toString().replace(STRIP_COMMENTS, ''),
+				fnText = fn.replace(STRIP_COMMENTS, ''),
 				argDecl = fnText.match(FN_ARGS);
 
 			if (argDecl[1].length == 0) {
@@ -60,6 +63,19 @@
 			}
 
 			return parameterNames;
+		},
+
+		body: function(fn) {
+			if (!isFunction(fn)) {
+				throw "Argument must be a function!";
+			}
+			return Functions.bodyOfFunctionText(fn.toString());			
+		},
+		
+		bodyOfFunctionText: function(fn) {
+			var fnText = fn.toString().replace(STRIP_COMMENTS, ''),
+				fnBody = fnText.substring(fnText.indexOf('{') + 1, fnText.lastIndexOf('}')).trim();
+			return fnBody;			
 		},
 		
 		isFunction: isFunction,

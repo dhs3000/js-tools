@@ -41,7 +41,6 @@ describe("Functions", function() {
 		  expect(test('EINS', 2)).toEqual([2]);
 	  });
   });
-  
 
   describe("parameterNamesOf", function() {
 	it("Parameterless function should have no parameter names", function() {
@@ -71,11 +70,16 @@ describe("Functions", function() {
 	  
 	  expect(f.parameterNamesOf(test)).toEqual(['paramA', 'paramB', 'paramC']);
 	});
-	
-	
   });
   
-  
+  describe("body", function() {
+	  it("Should get the body of a function", function() {
+		  function test() {function intern() {return 'bla';}return intern;}
+
+		  expect(f.body(test)).toEqual('function intern() {return \'bla\';}return intern;');
+	  });
+
+  });
   
   
   
