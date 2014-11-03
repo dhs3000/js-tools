@@ -1,4 +1,3 @@
-
 /**
  * Defining global variables
  */

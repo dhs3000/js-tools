@@ -17,15 +17,15 @@
 /**
  * Debugging.
  */
-(function(window) {
+(function (window) {
 	'use strict';
-	
+
 	window.Debug = {
-		assert: function(condition, msg) {
+		assert: function (condition, msg) {
 			if (!condition) {
 				throw 'Assertion error: ' + msg;
 			}
 		}
 	};
-	
+
 }(window));

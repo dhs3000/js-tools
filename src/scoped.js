@@ -15,8 +15,8 @@
  */
 
 /** Executes the given function immediatly and returns the result.
-  * Useful for scoped object creation like direct call but named/nicer ;-)
-  */
-var scoped = function(objCreator) {
-    return objCreator();
+ * Useful for scoped object creation like direct call but named/nicer ;-)
+ */
+var scoped = function (objCreator) {
+	return objCreator();
 };

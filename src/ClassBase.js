@@ -16,33 +16,33 @@
 
 /**
  * Base object to declare classes.
- * 
- * 
+ *
+ *
  */
-(function(window, Functions) {
+(function (window, Functions) {
 	'use strict';
-	
-	var getOrCreateConstructor = function(superClass, constr) {
+
+	var getOrCreateConstructor = function (superClass, constr) {
 		if (constr) {
 			return function SuperAwareConstructor() {
-				
+
 				// Enable call to this.superConstructor(arguments)
-				this.superConstructor = function() {
+				this.superConstructor = function () {
 					superClass.prototype.constructor.apply(this, Functions.args(arguments));
 				};
-				
+
 				constr.apply(this, Functions.args(arguments));
-				
+
 				delete this.superConstructor;
-			};				
+			};
 		}
 		return function SuperConstructor() {
 			var args = Functions.args(arguments);
 			superClass.prototype.constructor.apply(this, args);
 		};
 	};
-	
-	var getMethodInPrototypeChain = function(methodName, p) {
+
+	var getMethodInPrototypeChain = function (methodName, p) {
 		if (!p) {
 			return undefined;
 		}
@@ -51,49 +51,49 @@
 		}
 		return getMethodInPrototypeChain(methodName, Object.getPrototypeOf(p));
 	};
-	
+
 	function ClassBase() {
-		
+
 	}
-	
-	ClassBase.extend = function(constructorAndMethods) {
+
+	ClassBase.extend = function (constructorAndMethods) {
 		var superClass = this;
-		
+
 		var subClass = getOrCreateConstructor(superClass, constructorAndMethods.init);
 
-        // create prototype of subClass without invoking the parents constructor
-        subClass.prototype = Object.create(superClass.prototype);
-        subClass.prototype.constructor = subClass;
+		// create prototype of subClass without invoking the parents constructor
+		subClass.prototype = Object.create(superClass.prototype);
+		subClass.prototype.constructor = subClass;
 
-        // Enable call to super methods: this.superMethod(referenceToThisMethod, arguments)
-        // So the method must be a named function and named like the super method.
-        // method: function method() {
-        //     this.superMethod(method, ...
-        // }
-        subClass.prototype.superMethod = function(thisMethod /*args*/) {
-        	var m = thisMethod.__superMethod;
-        	if (!m) {
-        		throw new Error("Can't find super method '" + thisMethod + "'!");
-        	}
-        	
-        	return m.apply(this, Functions.args(arguments, 1));
-        };
+		// Enable call to super methods: this.superMethod(referenceToThisMethod, arguments)
+		// So the method must be a named function and named like the super method.
+		// method: function method() {
+		//     this.superMethod(method, ...
+		// }
+		subClass.prototype.superMethod = function (thisMethod /*args*/ ) {
+			var m = thisMethod.__superMethod;
+			if (!m) {
+				throw new Error("Can't find super method '" + thisMethod + "'!");
+			}
 
-        // Copy this method so that it is available in the new Class
-        subClass.extend = ClassBase.extend;
+			return m.apply(this, Functions.args(arguments, 1));
+		};
 
-        for (var methodName in constructorAndMethods) {
-            if (methodName !== "init" && constructorAndMethods.hasOwnProperty(methodName)) {
-            	var method = constructorAndMethods[methodName];
-            	
-            	method.__superMethod = getMethodInPrototypeChain(methodName, superClass.prototype);
-                subClass.prototype[methodName] = method;                
-            }
-        }
+		// Copy this method so that it is available in the new Class
+		subClass.extend = ClassBase.extend;
 
-        return subClass;
+		for (var methodName in constructorAndMethods) {
+			if (methodName !== "init" && constructorAndMethods.hasOwnProperty(methodName)) {
+				var method = constructorAndMethods[methodName];
+
+				method.__superMethod = getMethodInPrototypeChain(methodName, superClass.prototype);
+				subClass.prototype[methodName] = method;
+			}
+		}
+
+		return subClass;
 	};
-	
+
 	window.ClassBase = ClassBase;
-	
+
 }(window, Functions));

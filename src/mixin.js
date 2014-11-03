@@ -15,57 +15,60 @@
  */
 
 /** Mixes all given Objects or Functions (their protoype) together to one Object.
-  * Methods in 'base objects' / traits can be marked as abstract vio mixin.abstract.
-  * Use options.isCheckAbstractImplementations to enable
-  */
-var mixin = (function(options) {
-    "use strict";
+ * Methods in 'base objects' / traits can be marked as abstract vio mixin.abstract.
+ * Use options.isCheckAbstractImplementations to enable
+ */
+var mixin = (function (options) {
+	"use strict";
 
-    var defaultOptions = {
-            isCheckAbstractImplementations: false
-        },
+	var defaultOptions = {
+			isCheckAbstractImplementations: false
+		},
 
-        map = function(args, fn) {
-            return Array.prototype.map.call(args, fn);
-        },
+		map = function (args, fn) {
+			return Array.prototype.map.call(args, fn);
+		},
 
-        asArray = function(args) {
-            return Array.prototype.slice.call(args);
-        },
+		asArray = function (args) {
+			return Array.prototype.slice.call(args);
+		},
 
-        mergeInto = function(result, obj) {
-            Object.keys(obj).forEach(function(key) {
-                result[key] = obj[key];
-            });
-            return result;
-        },
+		mergeInto = function (result, obj) {
+			Object.keys(obj)
+				.forEach(function (key) {
+					result[key] = obj[key];
+				});
+			return result;
+		},
 
-        objOrPrototype = function(objOrClass) {
-            return objOrClass.prototype ? objOrClass.prototype : objOrClass;
-        },
+		objOrPrototype = function (objOrClass) {
+			return objOrClass.prototype ? objOrClass.prototype : objOrClass;
+		},
 
-        justMixin = function mixin() {
-            return map(arguments, objOrPrototype).reduce(mergeInto, {});
-        },
+		justMixin = function mixin() {
+			return map(arguments, objOrPrototype)
+				.reduce(mergeInto, {});
+		},
 
-        mixinWithAbstractMethodCheck = function mixinWithAbstractMethodCheck() {
-            var result = justMixin.apply(null, asArray(arguments));
+		mixinWithAbstractMethodCheck = function mixinWithAbstractMethodCheck() {
+			var result = justMixin.apply(null, asArray(arguments));
 
-            Object.keys(result).forEach(function(key) {
-                if (result[key] === mixin.abstract) {
-                    throw Error("Method '" + key + "' needs to be overridden!");
-                }
-            });
-            return result;
-        },
+			Object.keys(result)
+				.forEach(function (key) {
+					if (result[key] === mixin.abstract) {
+						throw Error("Method '" + key + "' needs to be overridden!");
+					}
+				});
+			return result;
+		},
 
-        options_ = [defaultOptions, options].reduce(mergeInto, {}),
+		options_ = [defaultOptions, options].reduce(mergeInto, {}),
 
-        mixin = options_.isCheckAbstractImplementations ?
-            mixinWithAbstractMethodCheck :
-            justMixin;
+		mixin = options_.isCheckAbstractImplementations ?
+		mixinWithAbstractMethodCheck :
+		justMixin;
 
-    mixin.abstract = function(){};
+	mixin.abstract = function () {};
 
-    return mixin;
+	return mixin;
 }(mixinOptions));

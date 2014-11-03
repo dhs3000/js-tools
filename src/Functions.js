@@ -17,33 +17,33 @@
 /**
  * Utilities for meta function handling.
  */
-(function(window) {
+(function (window) {
 	'use strict';
 
 	// http://stackoverflow.com/questions/1007981/how-to-get-function-parameter-names-values-dynamically-from-javascript
 	var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-    	FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m,
-    	FN_ARG_SPLIT = /,/,
-    	FN_ARG = /^\s*(.*)\s*$/,
-    	
-    	isFunction = function(fn) {
-	  		return (typeof fn == 'function');
+		FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m,
+		FN_ARG_SPLIT = /,/,
+		FN_ARG = /^\s*(.*)\s*$/,
+
+		isFunction = function (fn) {
+			return (typeof fn == 'function');
 		},
-		
+
 		arraySlice = Array.prototype.slice;
-	
+
 	window.Functions = {
 		/**
 		 * Extracts the names of the parameter of the given function as String Array.
 		 */
-		parameterNamesOf: function(fn) {
+		parameterNamesOf: function (fn) {
 			if (!isFunction(fn)) {
 				throw "Argument must be a function!";
 			}
 			return Functions.parameterNamesOfFunctionText(fn.toString());
 		},
-		
-		parameterNamesOfFunctionText: function(fn) {
+
+		parameterNamesOfFunctionText: function (fn) {
 			var parameterNames = [],
 				fnText = fn.replace(STRIP_COMMENTS, ''),
 				argDecl = fnText.match(FN_ARGS);
@@ -55,9 +55,9 @@
 			var list = argDecl[1].split(FN_ARG_SPLIT),
 				i = 0,
 				l = list.length;
-			
+
 			for (; i < l; i++) {
-				list[i].replace(FN_ARG, function(all, name) {
+				list[i].replace(FN_ARG, function (all, name) {
 					parameterNames.push(name);
 				});
 			}
@@ -65,24 +65,26 @@
 			return parameterNames;
 		},
 
-		body: function(fn) {
+		body: function (fn) {
 			if (!isFunction(fn)) {
 				throw "Argument must be a function!";
 			}
-			return Functions.bodyOfFunctionText(fn.toString());			
+			return Functions.bodyOfFunctionText(fn.toString());
 		},
-		
-		bodyOfFunctionText: function(fn) {
-			var fnText = fn.toString().replace(STRIP_COMMENTS, ''),
-				fnBody = fnText.substring(fnText.indexOf('{') + 1, fnText.lastIndexOf('}')).trim();
-			return fnBody;			
+
+		bodyOfFunctionText: function (fn) {
+			var fnText = fn.toString()
+				.replace(STRIP_COMMENTS, ''),
+				fnBody = fnText.substring(fnText.indexOf('{') + 1, fnText.lastIndexOf('}'))
+				.trim();
+			return fnBody;
 		},
-		
+
 		isFunction: isFunction,
-		
-		args: function(args, startIndex) {
+
+		args: function (args, startIndex) {
 			return arraySlice.call(args, startIndex);
 		}
 	};
-	
+
 }(window));

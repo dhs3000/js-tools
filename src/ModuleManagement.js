@@ -16,56 +16,56 @@
 
 /**
  * Helper to declare modules to be used in a specific 'scope' with their dependencies.
- * 
+ *
  * @param window
  * @param Functions
  */
-(function(window, Functions, Debug) {
+(function (window, Functions, Debug) {
 	'use strict';
 
 	var assert = Debug.assert;
-	
+
 	function ModuleManagement(Functions) {
-	  	var isFunction = Functions.isFunction,
-	  		parameterNamesOf = Functions.parameterNamesOf,
-	  		modules = {},
-	  		getModules = function() {
-	  			return modules;
-	  		},
-	  		getModule = function(name) {
-    			var module = modules[name];
-    
-    			if (!module) {
-    				module = window[name];
-    			}
-    
-    			if (!module) {
-    				throw "Can not find module or global variable with name '" + name + "'!";
-    			}
-    
-    			return module;
-    		},
-    	  	injectModulesIfNecessary = function(fnOrObj) {
-    			return isFunction(fnOrObj) ? withModules(fnOrObj) : fnOrObj;
-    		},
-    		withModules = function(fn) {
-    			var parameterNames = parameterNamesOf(fn), 
-    				args = [], 
-    				i = 0, 
-    				l = parameterNames.length;
-    			for (; i < l; i++) {
-    				args.push(getModule(parameterNames[i]));
-    			}
-    
-    			return fn.apply(null, args);
-    		};
-		
+		var isFunction = Functions.isFunction,
+			parameterNamesOf = Functions.parameterNamesOf,
+			modules = {},
+			getModules = function () {
+				return modules;
+			},
+			getModule = function (name) {
+				var module = modules[name];
+
+				if (!module) {
+					module = window[name];
+				}
+
+				if (!module) {
+					throw "Can not find module or global variable with name '" + name + "'!";
+				}
+
+				return module;
+			},
+			injectModulesIfNecessary = function (fnOrObj) {
+				return isFunction(fnOrObj) ? withModules(fnOrObj) : fnOrObj;
+			},
+			withModules = function (fn) {
+				var parameterNames = parameterNamesOf(fn),
+					args = [],
+					i = 0,
+					l = parameterNames.length;
+				for (; i < l; i++) {
+					args.push(getModule(parameterNames[i]));
+				}
+
+				return fn.apply(null, args);
+			};
+
 		/**
 		 * Erstellt ein benanntes Modul.
 		 * Das Modul kann eine Funktion sein, die dann ausgewertet wird oder direkt ein Objekt.
 		 * Wenn kein Modul angegeben ist, wird ein leeres Objekt zurükgegeben.
 		 */
-    	this.module = function(name, module) {
+		this.module = function (name, module) {
 			assert(!modules[name], "Module '" + name + "' already exists");
 
 			return modules[name] = module ? (isFunction(module) ? module() : module) : {};
@@ -74,10 +74,10 @@
 		/**
 		 * Erstellt eine benannte Klasse (Modul). Wertet im Gegensatz zu module() keine Objekte/Funktionen aus.
 		 */
-		this.moduleClass = function(name, moduleClass) {
+		this.moduleClass = function (name, moduleClass) {
 			assert(!modules[name], "Module/Class '" + name + "' already exists");
 			assert(moduleClass, "moduleClass is required!");
-			
+
 			return modules[name] = moduleClass;
 		};
 
@@ -93,19 +93,18 @@
 		 * Definiert ein Modul. Modul kann eine Funktion sein und über ihre Argumente die Abhängigkeiten zu andren Modulen oder globalen Variablen
 		 * (jQuery/$) angeben. Nicht auflösbare Abhängigkeiten führen zu einem Fehler.
 		 */
-		this.define = function(name, module) {
+		this.define = function (name, module) {
 			return this.module(name, injectModulesIfNecessary(module));
 		};
-		
+
 		/**
-		 * Definiert eine Klasse im Modulsystem. 
+		 * Definiert eine Klasse im Modulsystem.
 		 */
-		this.defineClass = function(name, moduleClass) {
-			return this.moduleClass(name, injectModulesIfNecessary(moduleClass));		
+		this.defineClass = function (name, moduleClass) {
+			return this.moduleClass(name, injectModulesIfNecessary(moduleClass));
 		};
 	}
 
 	window.ModuleManagement = ModuleManagement;
-	
-}(window, Functions, Debug));
 
+}(window, Functions, Debug));

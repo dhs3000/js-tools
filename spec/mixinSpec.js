@@ -1,151 +1,170 @@
+describe("The 'mixin' function", function () {
 
-describe("The 'mixin' function", function() {
+	it("mixes an array of objects together", function () {
+		var a = {
+				a: 23
+			},
+			b = {
+				b: 24
+			},
+			result = mixin(a, b);
 
-    it("mixes an array of objects together", function() {
-        var a = {a: 23},
-            b = {b: 24},
-            result = mixin(a, b);
+		expect(a.a)
+			.toBeDefined();
+		expect(a.b)
+			.toBeUndefined();
+		expect(b.a)
+			.toBeUndefined();
+		expect(b.b)
+			.toBeDefined();
 
-            expect(a.a).toBeDefined();
-            expect(a.b).toBeUndefined();
-            expect(b.a).toBeUndefined();
-            expect(b.b).toBeDefined();
+		expect(result.a)
+			.toBeDefined();
+		expect(result.b)
+			.toBeDefined();
+	});
 
-            expect(result.a).toBeDefined();
-            expect(result.b).toBeDefined();
-    });
+	it("mixes a class and an object togethger", function () {
+		function A(name) {
+			this.name;
+		}
+		A.prototype.describe = function () {
+			return "I am " + this.name;
+		};
 
-    it("mixes a class and an object togethger", function() {
-        function A(name) {
-            this.name;
-        }
-        A.prototype.describe = function(){
-            return "I am " + this.name;
-        };
+		var withAge = {
+				age: 24
+			},
+			result = mixin(A, withAge);
 
-        var withAge = {
-                age: 24
-            },
-            result = mixin(A, withAge);
+		expect(result.describe)
+			.toBeDefined();
+		expect(result.name)
+			.toBeUndefined();
 
-            expect(result.describe).toBeDefined();
-            expect(result.name).toBeUndefined();
+		expect(result.age)
+			.toBeDefined();
+	});
 
-            expect(result.age).toBeDefined();
-    });
+	it("mixes an object that can be used as prototype for a class", function () {
 
-    it("mixes an object that can be used as prototype for a class", function() {
+		var describable = {
+			describe: function () {
+				return "I am " + this.name;
+			}
+		};
 
+		function Person(name) {
+			this.name = name;
+		}
+		Person.prototype = mixin(describable);
 
-        var describable = {
-            describe: function(){
-                return "I am " + this.name;
-            }
-        };
+		expect(Person.prototype.describe)
+			.toBeDefined();
 
-        function Person(name) {
-            this.name = name;
-        }
-        Person.prototype = mixin(describable);
+		var person = new Person("Hans");
 
-        expect(Person.prototype.describe).toBeDefined();
+		expect(person.describe)
+			.toBeDefined();
+		expect(person.describe())
+			.toEqual("I am Hans");
 
-        var person = new Person("Hans");
+	});
 
-        expect(person.describe).toBeDefined();
-        expect(person.describe()).toEqual("I am Hans");
+	it("mixes in another class that can be used as prototype for a class", function () {
 
-    });
+		function Describable() {}
+		Describable.prototype = {
+			describe: function () {
+				return "I am " + this.name;
+			}
+		};
 
-    it("mixes in another class that can be used as prototype for a class", function() {
+		function Person(name) {
+			this.name = name;
+		}
+		Person.prototype = mixin(Describable);
 
-        function Describable() {
-        }
-        Describable.prototype = {
-            describe: function(){
-                return "I am " + this.name;
-            }
-        };
+		expect(Person.prototype.describe)
+			.toBeDefined();
 
-        function Person(name) {
-            this.name = name;
-        }
-        Person.prototype = mixin(Describable);
+		var person = new Person("Hans");
 
-        expect(Person.prototype.describe).toBeDefined();
+		expect(person.describe)
+			.toBeDefined();
+		expect(person.describe())
+			.toEqual("I am Hans");
 
-        var person = new Person("Hans");
+	});
 
-        expect(person.describe).toBeDefined();
-        expect(person.describe()).toEqual("I am Hans");
+	it("mixes in another class that can be used as prototype for a class and that can call the 'super' constructor", function () {
 
-    });
+		function Person(name) {
+			this.name = name;
+		}
 
-    it("mixes in another class that can be used as prototype for a class and that can call the 'super' constructor", function() {
+		Person.prototype = {
+			describe: function () {
+				return "I am " + this.name;
+			}
+		};
 
-        function Person(name) {
-            this.name = name;
-        }
+		function Employee(name, department) {
+			Person.call(this, name);
+			this.department = department;
+		}
 
-        Person.prototype = {
-            describe: function() {
-                return "I am " + this.name;
-            }
-        };
+		Employee.prototype = mixin(Person, {
+			work: function () {
+				return "I do my work at " + this.department;
+			}
+		});
 
-        function Employee(name, department) {
-            Person.call(this, name);
-            this.department = department;
-        }
+		var employee = new Employee("Hans", "IT office");
 
-        Employee.prototype = mixin(Person, {
-            work: function() {
-                return "I do my work at " + this.department;
-            }
-        });
+		expect(employee.describe())
+			.toEqual("I am Hans");
+		expect(employee.work())
+			.toEqual("I do my work at IT office");
 
-        var employee = new Employee("Hans", "IT office");
+	});
 
+	it("can check if an abstract method is implemented", function () {
+		var describable = {
+			name: mixin.abstract,
 
-        expect(employee.describe()).toEqual("I am Hans");
-        expect(employee.work()).toEqual("I do my work at IT office");
+			describe: function () {
+				return "I am " + this.name;
+			}
+		};
 
-    });
+		function Person(name) {
+			this._name = name;
+		}
 
-    it("can check if an abstract method is implemented", function() {
-        var describable = {
-            name: mixin.abstract,
+		function mixinWithImplementedMethod() {
+			Person.prototype = mixin(describable, {
+				name: function () {
+					return this._name;
+				}
+			});
+		}
 
-            describe: function(){
-                return "I am " + this.name;
-            }
-        };
+		expect(mixinWithImplementedMethod)
+			.not.toThrow();
 
-        function Person(name) {
-            this._name = name;
-        }
+		function mixinWithNotImplementedMethod() {
+			Person.prototype = mixin(describable, {
+				fullname: function () {
+					return this._name;
+				}
+			});
+		}
 
-        function mixinWithImplementedMethod() {
-            Person.prototype = mixin(describable, {
-                name: function() {
-                    return this._name;
-                }
-            });
-        }
+		expect(mixinWithNotImplementedMethod)
+			.toThrow();
+	});
 
-        expect(mixinWithImplementedMethod).not.toThrow();
-
-        function mixinWithNotImplementedMethod() {
-            Person.prototype = mixin(describable, {
-                fullname: function() {
-                    return this._name;
-                }
-            });
-        }
-
-        expect(mixinWithNotImplementedMethod).toThrow();
-    });
-    
-    // use scoped for private helper methods. Note: not for private data.
+	// use scoped for private helper methods. Note: not for private data.
 
 });
