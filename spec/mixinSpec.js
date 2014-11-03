@@ -1,7 +1,7 @@
 
-describe("mixin", function() {
+describe("The 'mixin' function", function() {
 
-    it("mixes an array of objects togethger", function() {
+    it("mixes an array of objects together", function() {
         var a = {a: 23},
             b = {b: 24},
             result = mixin(a, b);
@@ -34,7 +34,7 @@ describe("mixin", function() {
             expect(result.age).toBeDefined();
     });
 
-    it("can use a mixin of objects as prototype for a class", function() {
+    it("mixes an object that can be used as prototype for a class", function() {
 
 
         var describable = {
@@ -57,8 +57,7 @@ describe("mixin", function() {
 
     });
 
-    it("can use a mixin of another class as prototype for a class", function() {
-
+    it("mixes in another class that can be used as prototype for a class", function() {
 
         function Describable() {
         }
@@ -79,6 +78,37 @@ describe("mixin", function() {
 
         expect(person.describe).toBeDefined();
         expect(person.describe()).toEqual("I am Hans");
+
+    });
+
+    it("mixes in another class that can be used as prototype for a class and that can call the 'super' constructor", function() {
+
+        function Person(name) {
+            this.name = name;
+        }
+
+        Person.prototype = {
+            describe: function() {
+                return "I am " + this.name;
+            }
+        };
+
+        function Employee(name, department) {
+            Person.call(this, name);
+            this.department = department;
+        }
+
+        Employee.prototype = mixin(Person, {
+            work: function() {
+                return "I do my work at " + this.department;
+            }
+        });
+
+        var employee = new Employee("Hans", "IT office");
+
+
+        expect(employee.describe()).toEqual("I am Hans");
+        expect(employee.work()).toEqual("I do my work at IT office");
 
     });
 
@@ -115,7 +145,7 @@ describe("mixin", function() {
 
         expect(mixinWithNotImplementedMethod).toThrow();
     });
-
+    
     // use scoped for private helper methods. Note: not for private data.
 
 });
