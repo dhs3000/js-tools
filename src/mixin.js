@@ -68,7 +68,22 @@ var mixin = (function (options) {
 		mixinWithAbstractMethodCheck :
 		justMixin;
 
-	mixin.abstract = function () {};
+	/** Marks a method as abstract.
+	 * This means it must be implemented at creation
+	 * time (as prototype property).
+	 */
+	mixin.abstract = function () {
+		throw new Error("Abstract method called!");
+	};
+
+	/** Marks a method as to be implemented, but possible
+	 * at runtime, not creation time. */
+	mixin.expectRuntimeImplementation = function () {
+		throw new Error("Method not implemented!");
+	};
+
+	/** Placeholder for a hook method that might be overridden. */
+	mixin.noop = function () {};
 
 	return mixin;
 }(mixinOptions));

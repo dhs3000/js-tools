@@ -165,6 +165,76 @@ describe("The 'mixin' function", function () {
 			.toThrow();
 	});
 
-	// use scoped for private helper methods. Note: not for private data.
+	describe("allows to mark a method as 'expectRuntimeImplementation'", function () {
 
+		var describable = {
+			getName: mixin.expectRuntimeImplementation,
+
+			describe: function () {
+				return "I am " + this.getName();
+			}
+		};
+
+		it("which throws an error if it is called and not implemented ", function () {
+			function Person(firstname) {
+				this.firstname = firstname;
+			}
+			Person.prototype = mixin(describable);
+
+			function callMixinMethod() {
+				new Person("Hans")
+					.describe();
+			}
+
+			expect(callMixinMethod)
+				.toThrow(Error("Method not implemented!"));
+		});
+
+		it("which does not throws an error if it is called and implemented ", function () {
+			function Person(firstname) {
+				this.getName = function() {
+					return firstname;
+				}
+			}
+			Person.prototype = mixin(describable);
+
+			function callMixinMethod() {
+				new Person("Hans")
+					.describe();
+			}
+
+			expect(callMixinMethod)
+				.not.toThrow();
+		});
+	});
+
+	it("does not check if a method marked as 'expectRuntimeImplementation' is implemented", function () {
+		var describable = {
+			name: mixin.expectRuntimeImplementation,
+
+			describe: function () {
+				return "I am " + this.name;
+			}
+		};
+
+		function mixinWithImplementedMethod() {
+			function Person(name) {
+				this.name = name;
+			}
+			Person.prototype = mixin(describable);
+		}
+
+		expect(mixinWithImplementedMethod)
+			.not.toThrow();
+
+		function mixinWithNotImplementedMethod() {
+			function Person(fullname) {
+				this.fullname = fullname;
+			}
+			Person.prototype = mixin(describable);
+		}
+
+		expect(mixinWithNotImplementedMethod)
+			.not.toThrow();
+	});
 });
