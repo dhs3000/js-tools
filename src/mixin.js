@@ -34,10 +34,9 @@ var mixin = (function (options) {
 		},
 
 		mergeInto = function (result, obj) {
-			Object.keys(obj)
-				.forEach(function (key) {
-					result[key] = obj[key];
-				});
+			Object.keys(obj).forEach(function (key) {
+				result[key] = obj[key];
+			});
 			return result;
 		},
 
@@ -46,27 +45,23 @@ var mixin = (function (options) {
 		},
 
 		justMixin = function mixin() {
-			return map(arguments, objOrPrototype)
-				.reduce(mergeInto, {});
+			return map(arguments, objOrPrototype).reduce(mergeInto, {});
 		},
 
 		mixinWithAbstractMethodCheck = function mixinWithAbstractMethodCheck() {
 			var result = justMixin.apply(null, asArray(arguments));
 
-			Object.keys(result)
-				.forEach(function (key) {
-					if (result[key] === mixin.abstract) {
-						throw Error("Method '" + key + "' needs to be overridden!");
-					}
-				});
+			Object.keys(result).forEach(function (key) {
+				if (result[key] === mixin.abstract) {
+					throw Error("Method '" + key + "' needs to be overridden!");
+				}
+			});
 			return result;
 		},
 
 		options_ = [defaultOptions, options].reduce(mergeInto, {}),
 
-		mixin = options_.isCheckAbstractImplementations ?
-		mixinWithAbstractMethodCheck :
-		justMixin;
+		mixin = options_.isCheckAbstractImplementations ? mixinWithAbstractMethodCheck : justMixin;
 
 	/** Marks a method as abstract.
 	 * This means it must be implemented at creation
